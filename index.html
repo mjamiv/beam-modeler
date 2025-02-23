@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Beam Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Steel Beam Analyzer</h1>
+    <div class="container">
+        <div class="input-section">
+            <h2>Beam Properties</h2>
+            <label>Span Length (ft): <input type="number" id="spanLength" step="0.1" min="1" value="20"></label><br>
+            <label>Depth (in): <input type="number" id="depth" step="0.1" min="1" value="12"></label><br>
+            <label>Height (in): <input type="number" id="height" step="0.1" min="1" value="12"></label><br>
+            <label>Flange Thickness (in): <input type="number" id="flangeThickness" step="0.01" min="0.1" value="0.5"></label><br>
+            <label>Web Thickness (in): <input type="number" id="webThickness" step="0.01" min="0.1" value="0.3"></label><br>
+            
+            <h2>Support Conditions</h2>
+            <label><input type="radio" name="support" id="simple" value="simple" checked> Simple Span</label>
+            <label><input type="radio" name="support" id="continuous" value="continuous"> Continuous</label><br>
+            <div id="continuousOptions" style="display: none;">
+                <label>Number of Spans (2-5): <input type="number" id="numSpans" min="2" max="5" value="2"></label><br>
+            </div>
+            
+            <h2>Loads</h2>
+            <div id="loadInputs">
+                <label>Load Type: 
+                    <select id="loadType">
+                        <option value="point">Point Load</option>
+                        <option value="uniform">Uniform Load</option>
+                    </select>
+                </label><br>
+                <label>Magnitude (kips or kips/ft): <input type="number" id="loadMagnitude" step="0.1" min="0" value="10"></label><br>
+                <label>Position (ft from left): <input type="number" id="loadPosition" step="0.1" min="0" value="10"></label><br>
+                <button onclick="addLoad()">Add Load</button>
+            </div>
+            <ul id="loadList"></ul>
+            <button onclick="analyzeBeam()">Analyze Beam</button>
+        </div>
+        <div class="canvas-section">
+            <canvas id="beamCanvas" width="800" height="600"></canvas>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
