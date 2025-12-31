@@ -3,46 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steel Beam Analyzer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Dynamic Frame Earthquake Simulator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Steel Beam Analyzer</h1>
-    <div class="container">
-        <div class="input-section">
-            <h2>Beam Properties</h2>
-            <label>Span Length (ft): <input type="number" id="spanLength" step="0.1" min="1" value="20"></label><br>
-            <label>Depth (in): <input type="number" id="depth" step="0.1" min="1" value="12"></label><br>
-            <label>Height (in): <input type="number" id="height" step="0.1" min="1" value="12"></label><br>
-            <label>Flange Thickness (in): <input type="number" id="flangeThickness" step="0.01" min="0.1" value="0.5"></label><br>
-            <label>Web Thickness (in): <input type="number" id="webThickness" step="0.01" min="0.1" value="0.3"></label><br>
-            
-            <h2>Support Conditions</h2>
-            <label><input type="radio" name="support" id="simple" value="simple" checked> Simple Span</label>
-            <label><input type="radio" name="support" id="continuous" value="continuous"> Continuous</label><br>
-            <div id="continuousOptions" style="display: none;">
-                <label>Number of Spans (2-5): <input type="number" id="numSpans" min="2" max="5" value="2"></label><br>
+    <header>
+        <div>
+            <h1>Dynamic Frame Earthquake Simulator</h1>
+            <p>Build a multi-bay, multi-story moment frame, excite it with ground motion, and watch forces flow through every member.</p>
+        </div>
+        <div class="stat-cards">
+            <div class="stat">
+                <span class="label">Dominant Frequency</span>
+                <span id="freqDisplay" class="value">– Hz</span>
             </div>
-            
-            <h2>Loads</h2>
-            <div id="loadInputs">
-                <label>Load Type: 
-                    <select id="loadType">
-                        <option value="point">Point Load</option>
-                        <option value="uniform">Uniform Load</option>
+            <div class="stat">
+                <span class="label">Dominant Period</span>
+                <span id="periodDisplay" class="value">– s</span>
+            </div>
+            <div class="stat">
+                <span class="label">Peak Drift</span>
+                <span id="driftDisplay" class="value">–</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="controls">
+            <h2>Geometry &amp; Materials</h2>
+            <div class="grid">
+                <label>Stories <input type="number" id="stories" min="1" max="12" value="4"></label>
+                <label>Column Lines <input type="number" id="bays" min="1" max="6" value="3"></label>
+                <label>Story Height (m) <input type="number" id="storyHeight" min="2" step="0.1" value="3.5"></label>
+                <label>Bay Width (m) <input type="number" id="bayWidth" min="3" step="0.1" value="6"></label>
+                <label>Segments / Member <input type="number" id="segments" min="1" max="6" value="2"></label>
+                <label>Mass per Level (kg) <input type="number" id="levelMass" min="1000" step="100" value="25000"></label>
+                <label>Column EI (kN·m²) <input type="number" id="columnEI" min="1" step="0.1" value="2500"></label>
+                <label>Beam EI (kN·m²) <input type="number" id="beamEI" min="1" step="0.1" value="1500"></label>
+                <label>Rayleigh Damping (%) <input type="number" id="damping" min="0" step="0.1" value="3"></label>
+            </div>
+
+            <h2>Ground Motion</h2>
+            <div class="grid">
+                <label>Motion Type
+                    <select id="motionType">
+                        <option value="sine">Sine Pulse</option>
+                        <option value="pulse">Triangular Pulse</option>
+                        <option value="noise">Filtered Noise</option>
                     </select>
-                </label><br>
-                <label>Magnitude (kips or kips/ft): <input type="number" id="loadMagnitude" step="0.1" min="0" value="10"></label><br>
-                <label>Position (ft from left): <input type="number" id="loadPosition" step="0.1" min="0" value="10"></label><br>
-                <button onclick="addLoad()">Add Load</button>
+                </label>
+                <label>Peak Accel (m/s²) <input type="number" id="peakAccel" step="0.1" value="3.5"></label>
+                <label>Motion Frequency (Hz) <input type="number" id="motionFreq" step="0.1" value="1.4"></label>
+                <label>Duration (s) <input type="number" id="duration" step="0.5" value="20"></label>
             </div>
-            <ul id="loadList"></ul>
-            <button onclick="analyzeBeam()">Analyze Beam</button>
-        </div>
-        <div class="canvas-section">
-            <canvas id="beamCanvas" width="800" height="600"></canvas>
-        </div>
-    </div>
+
+            <div class="actions">
+                <button id="build">Rebuild Model</button>
+                <button id="play">Start</button>
+                <button id="pause">Pause</button>
+                <button id="reset">Reset</button>
+            </div>
+        </section>
+
+        <section class="visuals">
+            <div class="canvas-wrapper">
+                <h3>Frame Response</h3>
+                <canvas id="frameCanvas" width="780" height="520"></canvas>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>Story Displacements</h3>
+                <canvas id="chartCanvas" width="780" height="240"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Red = compression, Green = tension, Yellow = near-zero force. Displacements plotted relative to the moving ground.</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
